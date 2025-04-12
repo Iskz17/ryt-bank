@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FlatList, RefreshControl, View } from "react-native";
 import { Card, Text, useTheme, Divider } from "react-native-paper";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, ActivityIndicator} from "react-native";
 import { authenticateWithBiometrics } from "../services/biometric";
 import { sampleTransactions } from "../utils/sampleData";
 import { formatCurrency } from "../utils/formatters";
@@ -10,14 +10,17 @@ const TransactionListScreen = ({ navigation }: any) => {
   const [refreshing, setRefreshing] = useState(false);
   const { colors } = useTheme();
   const [transactions, setTransactions] = useState(sampleTransactions);
+  const [loadingId, setLoadingId] = useState<string | null>(null);
 
   const handleRevealAmount = async (id: string) => {
+    setLoadingId(id);
     const success = await authenticateWithBiometrics();
-    if (!success) return;
-
-    setTransactions((prev) =>
-      prev.map((tx) => (tx.id === id ? { ...tx, isMasked: false } : tx))
-    );
+    if (success) {
+      setTransactions((prev) =>
+        prev.map((tx) => (tx.id === id ? { ...tx, isMasked: false } : tx))
+      );
+    }
+    setLoadingId(null);
   };
 
   const onRefresh = () => {
@@ -34,7 +37,7 @@ const TransactionListScreen = ({ navigation }: any) => {
       }}
     >
       <FlatList
-        data={sampleTransactions}
+        data={transactions}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ paddingVertical: 16 }}
         refreshControl={
@@ -64,21 +67,25 @@ const TransactionListScreen = ({ navigation }: any) => {
                 <Text variant="bodyMedium" style={{ fontWeight: "600" }}>
                   {item.description}
                 </Text>
-                <Text variant="bodySmall" style={{ color: colors.tertiary }}>
+                <Text variant="bodySmall" style={{ color: colors.shadow}}>
                   {item.date}
                 </Text>
               </View>
-              <TouchableOpacity onPress={() => handleRevealAmount(item.id)}>
-                <Text
-                  variant="bodyMedium"
-                  style={{
-                    fontWeight: "500",
-                    color: item.isMasked ? colors.tertiary : colors.secondary,
-                  }}
-                >
-                  {item.isMasked ? "••••" : formatCurrency(item.amount)}
-                </Text>
-              </TouchableOpacity>
+              {loadingId === item.id ? (
+                <ActivityIndicator size="small" />
+              ) : (
+                <TouchableOpacity onPress={() => handleRevealAmount(item.id)}>
+                  <Text
+                    variant="bodyMedium"
+                    style={{
+                      fontWeight: "500",
+                      color: item.isMasked ? colors.shadow : colors.onSurface,
+                    }}
+                  >
+                    {item.isMasked ? "••••" : formatCurrency(item.amount)}
+                  </Text>
+                </TouchableOpacity>
+              )}
             </Card.Content>
           </Card>
         )}

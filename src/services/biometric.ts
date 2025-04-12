@@ -1,4 +1,4 @@
-import * as LocalAuthentication from "expo-local-authentication";
+import * as LocalAuthentication from 'expo-local-authentication';
 
 export async function authenticateWithBiometrics(): Promise<boolean> {
   const hasHardware = await LocalAuthentication.hasHardwareAsync();
@@ -10,6 +10,7 @@ export async function authenticateWithBiometrics(): Promise<boolean> {
     promptMessage: "Authenticate to reveal amount",
     fallbackLabel: "Use Passcode",
     disableDeviceFallback: false,
+    requireConfirmation: false,
   });
 
   return result.success;

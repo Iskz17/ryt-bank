@@ -1,20 +1,53 @@
-import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { NavigationContainer } from "@react-navigation/native";
-import TransactionListScreen from "../screens/TransactionListScreen";
-import TransactionDetailScreen from "../screens/TransactionDetailScreen";
+// src/navigation/AppNavigator.tsx
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+import TransactionListScreen from '../screens/TransactionListScreen';
+import TransactionDetailScreen from '../screens/TransactionDetailScreen';
+// Placeholder for other tab screens (e.g. Profile)
+import ProfileScreen from '../screens/ProfileScreen';
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+const TransactionStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="Transactions" component={TransactionListScreen} />
+    <Stack.Screen name="TransactionDetail" component={TransactionDetailScreen} />
+  </Stack.Navigator>
+);
 
 const AppNavigator = () => (
   <NavigationContainer>
-    <Stack.Navigator initialRouteName="Transactions">
-      <Stack.Screen name="Transactions" component={TransactionListScreen} />
-      <Stack.Screen
-        name="TransactionDetail"
-        component={TransactionDetailScreen}
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: '#007AFF',
+        tabBarStyle: { height: 75, paddingBottom: 8 },
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={TransactionStack}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="credit-card-outline" size={size} color={color} />
+          ),
+        }}
       />
-    </Stack.Navigator>
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="account-circle-outline" size={size} color={color} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   </NavigationContainer>
 );
 
