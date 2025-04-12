@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FlatList, RefreshControl, View } from "react-native";
 import { Card, Text, useTheme, Divider } from "react-native-paper";
-import { TouchableOpacity, ActivityIndicator} from "react-native";
+import { TouchableOpacity, ActivityIndicator } from "react-native";
 import { authenticateWithBiometrics } from "../services/biometric";
 import { sampleTransactions } from "../utils/sampleData";
 import { formatCurrency } from "../utils/formatters";
@@ -67,14 +67,20 @@ const TransactionListScreen = ({ navigation }: any) => {
                 <Text variant="bodyMedium" style={{ fontWeight: "600" }}>
                   {item.description}
                 </Text>
-                <Text variant="bodySmall" style={{ color: colors.shadow}}>
+                <Text variant="bodySmall" style={{ color: colors.shadow }}>
                   {item.date}
                 </Text>
               </View>
               {loadingId === item.id ? (
                 <ActivityIndicator size="small" />
               ) : (
-                <TouchableOpacity onPress={() => handleRevealAmount(item.id)}>
+                <TouchableOpacity
+                  onPress={() => {
+                    if (item.isMasked) {
+                      handleRevealAmount(item.id);
+                    }
+                  }}
+                >
                   <Text
                     variant="bodyMedium"
                     style={{

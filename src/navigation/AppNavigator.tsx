@@ -1,4 +1,3 @@
-// src/navigation/AppNavigator.tsx
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -7,8 +6,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import TransactionListScreen from '../screens/TransactionListScreen';
 import TransactionDetailScreen from '../screens/TransactionDetailScreen';
-// Placeholder for other tab screens (e.g. Profile)
+
 import ProfileScreen from '../screens/ProfileScreen';
+import CardScreen from '../screens/CardScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -35,6 +35,15 @@ const AppNavigator = () => (
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="credit-card-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Cards"
+        component={CardScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="card-multiple" size={size} color={color} />
           ),
         }}
       />
