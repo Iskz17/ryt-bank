@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
-import * as LocalAuthentication from 'expo-local-authentication';
+import React, { createContext, useContext, useState } from "react";
+import * as LocalAuthentication from "expo-local-authentication";
 
 type BiometricContextType = {
   isAuthenticated: boolean;
@@ -11,7 +11,11 @@ const BiometricContext = createContext<BiometricContextType>({
   triggerAuth: async () => {},
 });
 
-export const BiometricProvider = ({ children }: { children: React.ReactNode }) => {
+export const BiometricProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const triggerAuth = async () => {
@@ -20,22 +24,26 @@ export const BiometricProvider = ({ children }: { children: React.ReactNode }) =
       const isEnrolled = await LocalAuthentication.isEnrolledAsync();
 
       if (!hasHardware || !isEnrolled) {
-        alert('Biometric authentication not set up');
+        alert("Biometric authentication not set up");
+        throw new Error("Request failed");
         return;
       }
 
       const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: 'Authenticate to view',
-        fallbackLabel: 'Use Passcode',
+        promptMessage: "Authenticate to view",
+        fallbackLabel: "Use Passcode",
       });
 
       if (result.success) {
         setIsAuthenticated(true);
       } else {
-        alert('Authentication failed');
+        alert("Authentication failed");
+
+        throw new Error("Authentication failed");
       }
     } catch (error) {
       console.error(error);
+      throw new Error("Authentication failed");
     }
   };
 
