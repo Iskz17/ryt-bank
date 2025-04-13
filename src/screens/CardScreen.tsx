@@ -8,12 +8,16 @@ import {
   View,
   SafeAreaView,
   StatusBar,
+  TouchableOpacity,
 } from "react-native";
 import { BlurView } from "expo-blur";
 import { useTheme } from "react-native-paper";
-import { TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useBiometric } from "../context/BiometricContext";
+import { CardStackParamList } from "../navigation/AppNavigator"; // Adjust this path based on your project
+
+type Props = NativeStackScreenProps<CardStackParamList, "Card">;
 
 const HEADER_MAX_HEIGHT = 200;
 const HEADER_MIN_HEIGHT = 180;
@@ -74,40 +78,35 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     fontFamily: "GilroyMedium",
-
     color: "#fff",
     fontWeight: "600",
   },
   transactionName: {
     fontFamily: "GilroyMedium",
-
     fontSize: 16,
     fontWeight: "500",
   },
   transactionDate: {
     fontFamily: "GilroyMedium",
-
     fontSize: 12,
     color: "#999",
   },
   transactionAmount: {
     fontFamily: "GilroyMedium",
-
     fontSize: 16,
     fontWeight: "600",
     color: "#007377",
   },
   transactionAmountNeg: {
     fontFamily: "GilroyMedium",
-
     fontSize: 16,
     fontWeight: "600",
     color: "rgb(218, 33, 33)",
   },
 });
 
-const TransactionsScreen = ({ route, navigation }: any) => {
-  const { card } = route.params;
+const TransactionsScreen: React.FC<Props> = ({ route, navigation }) => {
+  const card = route.params;
   const scrollY = useRef(new Animated.Value(0)).current;
   const theme = useTheme();
   const { isAuthenticated, triggerAuth } = useBiometric();
@@ -140,8 +139,8 @@ const TransactionsScreen = ({ route, navigation }: any) => {
   const headerFontSize = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
     outputRange: [
-      theme.fonts.headlineSmall.fontSize,
-      theme.fonts.titleLarge.fontSize,
+      theme.fonts.headlineSmall.fontSize ?? 24,
+      theme.fonts.titleLarge.fontSize ?? 20,
     ],
     extrapolate: "clamp",
   });
@@ -169,14 +168,15 @@ const TransactionsScreen = ({ route, navigation }: any) => {
     "Aminah Zain",
   ];
 
-  const getRandomAmount = () => {
+  const getRandomAmount = (): string => {
     const amount = (Math.random() * 1000 + 10).toFixed(2);
     return `RM${amount}`;
   };
 
-  const getIsPositive = () => {
+  const getIsPositive = (): boolean => {
     return Math.random() > 0.5;
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -229,7 +229,7 @@ const TransactionsScreen = ({ route, navigation }: any) => {
             .map((word) => word[0])
             .join("")
             .toUpperCase();
-          const type = i % 2 === 0 ? "credit" : "debit";
+          const type = i % 2 === 0 ? "Credit" : "Debit";
 
           const amount = getRandomAmount();
           const isPositive = getIsPositive();
@@ -237,30 +237,22 @@ const TransactionsScreen = ({ route, navigation }: any) => {
             <TouchableOpacity
               key={`${initials}_${i}_${amount}_card_touchable`}
               onPress={() => {
+                const transaction = {
+                  id: "PG27VH56UQZ",
+                  name: name,
+                  amount: amount,
+                  date: date,
+                  description: "Some random description",
+                  type: type,
+                };
+
                 if (isAuthenticated) {
-                  navigation.navigate("TransactionDetail", {
-                    transaction: {
-                      id: "PG27VH56UQZ",
-                      name: name,
-                      amount: amount,
-                      date: date,
-                      description: "Some random description",
-                      type: type,
-                    },
-                  });
+                  navigation.navigate("TransactionDetail", transaction);
                   return;
                 }
+
                 triggerAuth().then(() => {
-                  navigation.navigate("TransactionDetail", {
-                    transaction: {
-                      id: "PG27VH56UQZ",
-                      name: name,
-                      amount: amount,
-                      date: date,
-                      description: "Some random description",
-                      type: type,
-                    },
-                  });
+                  navigation.navigate("TransactionDetail", transaction);
                 });
               }}
             >
@@ -286,13 +278,7 @@ const TransactionsScreen = ({ route, navigation }: any) => {
                       triggerAuth();
                     }}
                   >
-                    <Text
-                      style={{
-                        fontWeight: "500",
-                      }}
-                    >
-                      {"****"}
-                    </Text>
+                    <Text style={{ fontWeight: "500" }}>{"****"}</Text>
                   </TouchableOpacity>
                 )}
               </View>

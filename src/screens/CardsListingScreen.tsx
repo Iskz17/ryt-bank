@@ -10,18 +10,19 @@ import {
   ImageBackground,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Button } from "react-native-paper";
+import { CardType, CardStackParamList } from "../navigation/AppNavigator";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const CARD_SPACING = 16;
 const CARD_WIDTH = SCREEN_WIDTH * 0.85;
 const HEADER_HEIGHT = 280;
 
-const cards = [
+const cards: CardType[] = [
   {
     id: "1",
     title: "Syariah Card",
@@ -59,7 +60,7 @@ const cards = [
 
 export default function CardListingScreen() {
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<CardStackParamList>>();
   const theme = useTheme();
   const [activeCard, setActiveCard] = useState(0);
 
@@ -154,7 +155,7 @@ export default function CardListingScreen() {
           contentContainerStyle={{ paddingHorizontal: CARD_SPACING }}
           renderItem={({ item, index }) => (
             <TouchableOpacity
-              onPress={() => navigation.navigate("Card", { card: item })}
+              onPress={() => navigation.navigate("Card", item)}
               activeOpacity={0.9}
             >
               <ImageBackground

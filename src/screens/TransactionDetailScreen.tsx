@@ -13,7 +13,7 @@ const { width } = Dimensions.get("window");
 import React, { useLayoutEffect } from "react";
 
 const TransactionDetail = ({ route, navigation }: any) => {
-  const { transaction } = route.params;
+  const transaction = route.params;
 
   useLayoutEffect(() => {
     navigation.setOptions({

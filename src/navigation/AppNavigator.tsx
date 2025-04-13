@@ -1,95 +1,110 @@
 import React from "react";
+import {
+  NavigationContainer,
+  NavigatorScreenParams,
+} from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { NavigationContainer } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import TransactionListScreen from "../screens/TransactionListScreen";
 import TransactionDetailScreen from "../screens/TransactionDetailScreen";
-
 import ProfileScreen from "../screens/ProfileScreen";
 import CardScreen from "../screens/CardScreen";
 import CardListingScreen from "../screens/CardsListingScreen";
 
-const Stack = createNativeStackNavigator();
-const CardStackNav = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+export type CardType = {
+  id: string;
+  title: string;
+  number: string;
+  expiry: string;
+  limit: string;
+  type: string;
+  bank: string;
+  bgColor: string;
+  bgImage: number;
+};
 
-const AppNavigator = () => {
-  const TransactionStack = () => (
-    <Stack.Navigator
-      screenOptions={{
+export type TransactionDetailType = {
+  id: string;
+  name: string;
+  amount: string;
+  date: string;
+  description: string;
+  type: string;
+};
+
+export type CardStackParamList = {
+  Card: CardType,
+  TransactionDetail: TransactionDetailType;
+};
+
+export type RootTabParamList = {
+  Home: NavigatorScreenParams<TransactionStackParamList>;
+  Cards: NavigatorScreenParams<CardStackParamList>;
+  Profile: undefined;
+};
+
+const CardStackNav = createNativeStackNavigator<CardStackParamList>();
+const Tab = createBottomTabNavigator<RootTabParamList>();
+
+const CardStack = () => (
+  <CardStackNav.Navigator
+    screenOptions={{
+      headerTitleStyle: {
+        fontFamily: "NewKansasBold",
+        fontSize: 20,
+      },
+    }}
+  >
+    <CardStackNav.Screen
+      name="CardListing"
+      component={CardListingScreen}
+      options={{
+        title: "Cards",
+        headerTransparent: true,
+        headerTintColor: "#fff",
+        headerBackTitle: "",
         headerTitleStyle: {
           fontFamily: "NewKansasBold",
           fontSize: 20,
+          color: "#000",
         },
       }}
-    >
-      <Stack.Screen name="Transactions" component={TransactionListScreen} />
-      <Stack.Screen
-        name="TransactionDetail"
-        component={TransactionDetailScreen}
-      />
-    </Stack.Navigator>
-  );
-
-  const CardStack = () => (
-    <Stack.Navigator
-      screenOptions={{
+    />
+    <CardStackNav.Screen
+      name="Card"
+      component={CardScreen}
+      options={{
+        title: "Card Detail",
+        headerTransparent: true,
+        headerTintColor: "#fff",
+        headerBackTitle: "",
         headerTitleStyle: {
           fontFamily: "NewKansasBold",
           fontSize: 20,
+          color: "#fff",
         },
       }}
-    >
-      <Stack.Screen
-        name="CardListing"
-        component={CardListingScreen}
-        options={{
-          title: "Cards",
-          headerTransparent: true,
-          headerTintColor: "#fff",
-          headerBackTitle: "",
-          headerTitleStyle: {
-            fontFamily: "NewKansasBold",
-            fontSize: 20,
-            color: "#000",
-          },
-        }}
-      />
-      <Stack.Screen
-        name="Card"
-        component={CardScreen}
-        options={{
-          title: "Card Detail",
-          headerTransparent: true,
-          headerTintColor: "#fff",
-          headerBackTitle: "",
-          headerTitleStyle: {
-            fontFamily: "NewKansasBold",
-            fontSize: 20,
-            color: "#fff",
-          },
-        }}
-      />
-      <Stack.Screen
-        name="TransactionDetail"
-        options={{
-          title: "Transaction",
-          headerTransparent: true,
-          headerTintColor: "black",
-          headerBackTitle: "",
-          headerTitleStyle: {
-            fontFamily: "NewKansasBold",
-            fontSize: 20,
-            color: "black",
-          },
-        }}
-        component={TransactionDetailScreen}
-      />
-    </Stack.Navigator>
-  );
+    />
+    <CardStackNav.Screen
+      name="TransactionDetail"
+      component={TransactionDetailScreen}
+      options={{
+        title: "Transaction",
+        headerTransparent: true,
+        headerTintColor: "black",
+        headerBackTitle: "",
+        headerTitleStyle: {
+          fontFamily: "NewKansasBold",
+          fontSize: 20,
+          color: "black",
+        },
+      }}
+    />
+  </CardStackNav.Navigator>
+);
 
+const AppNavigator: React.FC = () => {
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -101,7 +116,7 @@ const AppNavigator = () => {
       >
         <Tab.Screen
           name="Home"
-          component={TransactionStack}
+          component={ProfileScreen}
           options={{
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons
