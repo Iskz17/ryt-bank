@@ -14,6 +14,7 @@ export default function App() {
 
   const [fontsLoaded] = Font.useFonts({
     GilroyMedium: require("./src/fonts/gilroy-medium.otf"),
+    GilroyBold: require("./src/fonts/gilroy-bold.otf"),
     NewKansasRegular: require("./src/fonts/New-Kansas-Regular.otf"),
     NewKansasBold: require("./src/fonts/New-Kansas-Bold.otf"),
   });
