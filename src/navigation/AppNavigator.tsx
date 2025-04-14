@@ -11,6 +11,8 @@ import TransactionDetailScreen from "../screens/TransactionDetailScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import CardScreen from "../screens/CardScreen";
 import CardListingScreen from "../screens/CardsListingScreen";
+import HomeScreen from "../screens/HomeScreen";
+import AnalyticsScreen from "../screens/AnalyticsScreen";
 
 export type CardType = {
   id: string;
@@ -34,17 +36,28 @@ export type TransactionDetailType = {
 };
 
 export type CardStackParamList = {
-  Card: CardType,
+  CardListing: undefined;
+  Card: CardType;
   TransactionDetail: TransactionDetailType;
 };
 
-export type RootTabParamList = {
-  Home: NavigatorScreenParams<TransactionStackParamList>;
-  Cards: NavigatorScreenParams<CardStackParamList>;
-  Profile: undefined;
+export type HomeStackParamList = {
+  Home: undefined;
 };
 
+export type AnalyticsStackParamList = {
+  GraphStuff: undefined;
+};
+
+export type RootTabParamList = {
+  Home: NavigatorScreenParams<HomeStackParamList>;
+  Cards: NavigatorScreenParams<CardStackParamList>;
+  Analytics: NavigatorScreenParams<AnalyticsStackParamList>;
+};
+
+const AnalyticsNav = createNativeStackNavigator<AnalyticsStackParamList>();
 const CardStackNav = createNativeStackNavigator<CardStackParamList>();
+const HomeStackNav = createNativeStackNavigator<HomeStackParamList>();
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
 const CardStack = () => (
@@ -104,6 +117,60 @@ const CardStack = () => (
   </CardStackNav.Navigator>
 );
 
+const HomeStack = () => (
+  <HomeStackNav.Navigator
+    screenOptions={{
+      headerTitleStyle: {
+        fontFamily: "NewKansasBold",
+        fontSize: 20,
+      },
+    }}
+  >
+    <CardStackNav.Screen
+      name="Home"
+      component={HomeScreen}
+      options={{
+        title: "Home",
+        headerTransparent: true,
+        headerTintColor: "#000",
+        headerBackTitle: "",
+        headerTitleStyle: {
+          fontFamily: "NewKansasBold",
+          fontSize: 20,
+          color: "#000",
+        },
+      }}
+    />
+  </HomeStackNav.Navigator>
+);
+
+const AnalyticsStack = () => (
+  <HomeStackNav.Navigator
+    screenOptions={{
+      headerTitleStyle: {
+        fontFamily: "NewKansasBold",
+        fontSize: 20,
+      },
+    }}
+  >
+    <CardStackNav.Screen
+      name="GraphStuff"
+      component={AnalyticsScreen}
+      options={{
+        title: "Analytics",
+        headerTransparent: true,
+        headerTintColor: "#000",
+        headerBackTitle: "",
+        headerTitleStyle: {
+          fontFamily: "NewKansasBold",
+          fontSize: 20,
+          color: "#000",
+        },
+      }}
+    />
+  </HomeStackNav.Navigator>
+);
+
 const AppNavigator: React.FC = () => {
   return (
     <NavigationContainer>
@@ -116,14 +183,10 @@ const AppNavigator: React.FC = () => {
       >
         <Tab.Screen
           name="Home"
-          component={ProfileScreen}
+          component={HomeStack}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons
-                name="home-circle-outline"
-                size={size}
-                color={color}
-              />
+              <MaterialCommunityIcons name="home" size={size} color={color} />
             ),
           }}
         />
@@ -141,12 +204,12 @@ const AppNavigator: React.FC = () => {
           }}
         />
         <Tab.Screen
-          name="Profile"
-          component={ProfileScreen}
+          name="Analytics"
+          component={AnalyticsStack}
           options={{
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons
-                name="account-circle-outline"
+                name="chart-line"
                 size={size}
                 color={color}
               />
